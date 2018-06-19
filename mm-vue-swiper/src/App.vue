@@ -19,9 +19,9 @@ export default {
   data() {
     return {
       list: [
-        { src: '../static/image/1.jpg' },
-        { src: '../static/image/2.jpg' },
-        { src: '../static/image/3.jpg' }
+        { src: 'http://ofj8a2i7u.bkt.clouddn.com/image/jpg/1.jpg' },
+        { src: 'http://ofj8a2i7u.bkt.clouddn.com/image/jpg/2.jpg' },
+        { src: 'http://ofj8a2i7u.bkt.clouddn.com/image/jpg/3.jpg' }
       ],
       swiperOption:{
         autoPlay: true,//自动播放
