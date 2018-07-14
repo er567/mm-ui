@@ -3,7 +3,8 @@
       <mm-swiper class="swiper"
       :autoPlay="swiperOption.autoPlay"
       :duration="swiperOption.duration"
-      :interval="swiperOption.interval">
+      :interval="swiperOption.interval"
+      @scrollStatus="getStatus">
         <mm-slider v-for="(item,index) in list" :key="index">
           <img :src="item.src" alt="">
         </mm-slider>
@@ -31,9 +32,13 @@ export default {
     };
   },
   mounted() {
-    console.error("http://er567.cn");
+    // console.error("http://er567.cn");
   },
-  methods: {}
+  methods: {
+    getStatus(state){
+      console.log(state)
+    }
+  }
 };
 </script>
 

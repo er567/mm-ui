@@ -1,7 +1,7 @@
 <template>
 	<div class="contains">
-    <div class="ui-swiper">
-      <slot/>
+    <div class="ui-swiper" @touchstart="s" @touchmove="m" @touchend="e">
+        <slot/>
     </div>
 	</div>
 </template>
@@ -13,6 +13,9 @@ export default {
   name: "mm-swiper",
   components: {},
   props: {
+    threshold:{//阀值
+        default:30
+    },
     autoPlay: {
       default: true
     },
@@ -34,7 +37,12 @@ export default {
       onlyOne:false,
       timer1: '',
       _width: 0,
-      index: 1
+      index: 1,
+      touch: {
+        sx: 0,
+        start: 0,
+        distance: 0
+      },
     };
   },
   mounted() {
@@ -80,7 +88,8 @@ export default {
       this.dom.transition = type == 'touch' ? '250ms' : this.duration + 'ms'
       this.setTransform(this.index * -1 * this._width)
       if (this.autoPlay) {
-          this.setTime()
+        //开启定时器
+        this.setTime()
       }
       var timeDuration = type == 'touch' ? '250' : this.duration
       setTimeout(() => {
@@ -110,7 +119,40 @@ export default {
     clearTimeOut() {
       this.auto = false
       window.clearTimeout(this.timer1)
-    }
+    },
+    left() {
+      return this.slider.getBoundingClientRect().left;
+    },
+    s(x) {
+      if (this.sliding && !this.onlyOne) {
+          this.$emit('scrollStatus', 'start')
+          this.clearTimeOut()
+          this.touch.sx = this.left()
+          this.touch.start = x.touches[x.touches.length - 1].clientX
+      }
+    },
+    m(x) {
+      if (this.sliding && this.touch.start != -1 && !this.onlyOne) {
+          this.$emit('scrollStatus', 'moving')
+          this.clearTimeOut()
+          this.touch.distance = x.touches[x.touches.length - 1].clientX - this.touch.start
+          this.setTransform(this.touch.distance + this.touch.sx)
+      }
+    },
+    e(x) {
+      if (this.sliding && this.touch.start != -1 && !this.onlyOne) {
+          this.$emit('scrollStatus', 'end')
+          this.clearTimeOut()
+          this.setTransform(this.touch.distance + this.touch.sx)
+          let x = this.left()
+          console.log(x)
+          x += this.touch.distance > 0 ? this._width * 0.5 - this.threshold : this._width * -0.5 + this.threshold
+          console.log(x)
+          this.index = Math.round(x / this._width) * -1
+          console.log(this.index)
+          this.wh('touch')
+      }
+    },
   }
 };
 </script>
